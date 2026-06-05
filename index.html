@@ -40,18 +40,15 @@
     let k = urlParams.get('k');
 
     // Respaldo por si hay URLs viejas con estructuras diferentes
-    if (!k) {
-      const currentUrl = document.location.href;
-      if (currentUrl.includes("k=")) {
-        k = currentUrl.substr(currentUrl.lastIndexOf("k=")+2);
-      }
-    }
-    
     if(k) {
-      // Redirección instantánea sin pasar por Google Apps Script
-      window.location.replace(NUEVO_SAAS_URL + k);
-    } else {
-      document.body.innerHTML = "<p style='color: #64748b;'>Enlace QR no reconocido.</p>";
+      // Limpiamos el código de espacios o saltos de línea accidentales
+      const cleanK = k.trim();
+      
+      // Añadimos un pequeño timeout de 100ms para asegurar que el navegador 
+      // procese la solicitud y que el router de Lovable esté inicializado.
+      setTimeout(() => {
+        window.location.replace(NUEVO_SAAS_URL + cleanK);
+      }, 100);
     }
   </script>
 </body>
