@@ -32,23 +32,34 @@
   <div class="loader"></div>
 
   <script>
-    // URL PÚBLICA DE TU NUEVA APLICACIÓN (Cámbiala por la tuya)
+    // URL PÚBLICA DE TU NUEVA APLICACIÓN
     const NUEVO_SAAS_URL = "https://seo-local-app.lovable.app/r/";
     
-    // Extraemos el parámetro "k" (ej: qr001) de manera robusta
-    const urlParams = new URLSearchParams(window.location.search);
-    let k = urlParams.get('k');
+    // Función para obtener el parámetro de la URL
+    function getSlug() {
+      const urlParams = new URLSearchParams(window.location.search);
+      let k = urlParams.get('k');
 
-    // Respaldo por si hay URLs viejas con estructuras diferentes
-    if(k) {
-      // Limpiamos el código de espacios o saltos de línea accidentales
-      const cleanK = k.trim();
-      
-      // Añadimos un pequeño timeout de 100ms para asegurar que el navegador 
-      // procese la solicitud y que el router de Lovable esté inicializado.
+      // Respaldo para URLs antiguas con estructura diferente
+      if (!k) {
+        const currentUrl = document.location.href;
+        if (currentUrl.includes("k=")) {
+          k = currentUrl.substr(currentUrl.lastIndexOf("k=")+2);
+        }
+      }
+      return k ? k.trim() : null;
+    }
+    
+    const slug = getSlug();
+    
+    if(slug) {
+      // Retraso de 100ms para asegurar estabilidad antes de la redirección
       setTimeout(() => {
-        window.location.replace(NUEVO_SAAS_URL + cleanK);
+        window.location.replace(NUEVO_SAAS_URL + slug);
       }, 100);
+    } else {
+      document.body.innerHTML = "<p style='color: #64748b; font-size: 14px;'>Enlace QR no reconocido o código faltante.</p>";
+      console.error("No se detectó un slug (k) válido en la URL.");
     }
   </script>
 </body>
